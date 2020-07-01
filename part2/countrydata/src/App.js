@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 
 import Filter from "./components/Filter";
 import Countries from "./components/Countries";
+import countryService from "./services/countries";
 
 const App = () => {
-  const countryHook = () => {
-    axios.get("https://restcountries.eu/rest/v2/all").then((response) => {
-      setCountries(response.data);
+  useEffect(() => {
+    countryService.getCountryData().then((response) => {
+      setCountries(response);
     });
-  };
-  useEffect(countryHook, []);
+  }, []);
 
   const [searchCountry, setSearchCountry] = useState("");
   const [countries, setCountries] = useState([]);

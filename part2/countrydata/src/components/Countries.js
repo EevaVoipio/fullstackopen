@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 import Button from "./Button";
+import weatherService from "../services/weather";
 
 const Countries = ({
   countries,
@@ -40,22 +40,12 @@ const CountryName = ({ name }) => {
 
 const Country = ({ country }) => {
   const selectedCity = country.capital;
-  const api_key = process.env.REACT_APP_API_KEY;
   const [weather, setWeather] = useState("");
-  const weatherHook = () => {
-    axios
-      .get(
-        "http://api.weatherstack.com/current?access_key=" +
-          api_key +
-          "&query=" +
-          selectedCity
-      )
-      .then((response) => {
-        setWeather(response.data.current);
-        console.log(response.data.current);
-      });
-  };
-  useEffect(weatherHook, []);
+  useEffect(() => {
+    weatherService.getWeatherData(selectedCity).then((response) => {
+      setWeather(response);
+    });
+  }, [selectedCity]);
   return (
     <div>
       <h1>{country.name}</h1>
@@ -67,12 +57,12 @@ const Country = ({ country }) => {
           <li key={language.name}>{language.name}</li>
         ))}
       </ul>
-      <img src={country.flag} width="10%" height="10%" />
+      <img src={country.flag} width="10%" height="10%" alt="Country flag" />
       <h1>Weather in {country.capital}</h1>
       <div>
         <b>temperature:</b> {weather.temperature} Celcius
       </div>
-      <img src={weather.weather_icons} />
+      <img src={weather.weather_icons} alt="Weather icon" />
       <div>
         <b>wind:</b> {weather.wind_speed} mph direction {weather.wind_dir}
       </div>
