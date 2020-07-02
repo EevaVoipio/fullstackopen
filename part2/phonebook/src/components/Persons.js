@@ -1,16 +1,27 @@
 import React from "react";
 
-const Persons = ({ persons, searchName }) =>
-  persons
+import Button from "./Button";
+
+const Persons = ({ persons, searchName, handleDeletePerson }) => {
+  return persons
     .filter((person) =>
       person.name.toLowerCase().includes(searchName.toLowerCase())
     )
-    .map((person) => <Person key={person.name} person={person} />);
+    .map((person) => (
+      <div key={person.id}>
+        <Person person={person} />
+        <Button
+          handleClick={handleDeletePerson.bind(this, person.id, person.name)}
+          text="delete"
+        />
+      </div>
+    ));
+};
 
 const Person = ({ person }) => (
-  <div>
+  <>
     {person.name} {person.number}
-  </div>
+  </>
 );
 
 export default Persons;
