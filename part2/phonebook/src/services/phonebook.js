@@ -16,4 +16,10 @@ const deletePerson = (id) => {
     .then((response) => console.log(response));
 };
 
-export default { getPhoneBook, addPerson, deletePerson };
+const changePhoneNumber = (id, personObject) => {
+  return axios
+    .put(`${baseUrl}/${id}`, personObject)
+    .then((response) => response.data);
+};
+
+export default { getPhoneBook, addPerson, deletePerson, changePhoneNumber };
