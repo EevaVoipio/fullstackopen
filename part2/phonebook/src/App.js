@@ -42,6 +42,7 @@ const App = () => {
       ) {
         const person = persons.find((person) => person.name === newName);
         const changedPerson = { ...person, number: newNumber };
+        const personObject = { name: newName, number: newNumber };
         phoneBookService
           .changePhoneNumber(changedPerson.id, changedPerson)
           .then((response) => {
@@ -58,25 +59,42 @@ const App = () => {
             }, 5000);
           })
           .catch((error) => {
-            setErrorMessage(
-              `Phone number of ${newName} could not be modified because ${newName} was already removed from server`
-            );
-            setTimeout(() => {
-              setErrorMessage(null);
-            }, 5000);
+            if (error.response.status === 400) {
+              setErrorMessage(error.response.data.error);
+              setTimeout(() => {
+                setErrorMessage(null);
+              }, 5000);
+            } else {
+              setErrorMessage(
+                `Phone number of ${newName} could not be modified because ${newName} was already removed from server`
+              );
+              setTimeout(() => {
+                setErrorMessage(null);
+              }, 5000);
+            }
           });
       }
     } else {
       const personObject = { name: newName, number: newNumber };
-      phoneBookService.addPerson(personObject).then((response) => {
-        setPersons(persons.concat(response));
-        setNewName("");
-        setNewNumber("");
-        setSuccessMessage(`${newName} was successfully added to the phonebook`);
-        setTimeout(() => {
-          setSuccessMessage(null);
-        }, 5000);
-      });
+      phoneBookService
+        .addPerson(personObject)
+        .then((response) => {
+          setPersons(persons.concat(response));
+          setNewName("");
+          setNewNumber("");
+          setSuccessMessage(
+            `${newName} was successfully added to the phonebook`
+          );
+          setTimeout(() => {
+            setSuccessMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          setErrorMessage(error.response.data.error);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 5000);
+        });
     }
   };
 
