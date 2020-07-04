@@ -42,7 +42,6 @@ const App = () => {
       ) {
         const person = persons.find((person) => person.name === newName);
         const changedPerson = { ...person, number: newNumber };
-        const personObject = { name: newName, number: newNumber };
         phoneBookService
           .changePhoneNumber(changedPerson.id, changedPerson)
           .then((response) => {
