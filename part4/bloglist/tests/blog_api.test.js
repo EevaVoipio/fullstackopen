@@ -3,13 +3,21 @@ const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const api = supertest(app)
+
+mongoose.set('useCreateIndex', true)
+mongoose.set('useFindAndModify', false)
 
 describe('there are 2 blogs saved initially', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
     console.log('cleared')
-
+    const users = await helper.usersInDb()
+    const user = users[0]
+    helper.initialBlogs.forEach((blog) => {
+      blog['user'] = user.id
+    })
     await Blog.insertMany(helper.initialBlogs)
     console.log('saved')
     console.log('done')
@@ -107,7 +115,6 @@ describe('there are 2 blogs saved initially', () => {
       await api.put(`/api/blogs/${id}`).send(updatedBlog).expect(200)
 
       const blogsAtEnd = await helper.blogsInDb()
-      console.log(blogsAtEnd[0].id)
       expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
       const titles = blogsAtEnd.map((blog) => blog.title)
 
