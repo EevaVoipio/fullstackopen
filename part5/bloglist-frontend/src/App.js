@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Blogform from './components/Blogform'
 import Button from './components/Button'
+import Login from './components/Login'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -10,6 +12,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
 
@@ -26,6 +31,10 @@ const App = () => {
       setPassword('')
       blogService.setToken(user.token)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      setSuccessMessage('logged in')
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
     } catch (exception) {
       setErrorMessage('wrong credentials')
       setTimeout(() => {
@@ -38,6 +47,32 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
+  }
+
+  const handleCreateBlog = async (event) => {
+    event.preventDefault()
+    try {
+      const blog = await blogService.create({
+        title: title,
+        author: author,
+        url: url
+      })
+      setBlogs(blogs.concat(blog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setSuccessMessage(`a new blog ${title} by ${author} added`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    } catch (exception) {
+      setErrorMessage(
+        'blog could not be added, mandatory information is missing'
+      )
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
   useEffect(() => {
@@ -53,48 +88,37 @@ const App = () => {
     }
   }, [])
 
-  const loginForm = () => (
+  return (
     <div>
       <Notification
         message={errorMessage != null ? errorMessage : successMessage}
         type={errorMessage != null ? 'error' : 'success'}
       />
-      <h2>Login</h2>
-
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
-            type='text'
-            value={username}
-            name='Username'
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            type='password'
-            value={password}
-            name='Password'
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type='submit'>login</button>
-      </form>
-    </div>
-  )
-  // }
-
-  return (
-    <div>
-      {user === null && loginForm()}
+      {user === null && (
+        <Login
+          setUsername={setUsername}
+          setPassword={setPassword}
+          handleLogin={handleLogin}
+          username={username}
+          password={password}
+        />
+      )}
       {user !== null && (
         <div>
+          <h2>blogs</h2>
           <p>
             {user.name} logged in{' '}
             <Button handleClick={handleLogout} text='logout' />
           </p>
+          <Blogform
+            handleCreateBlog={handleCreateBlog}
+            title={title}
+            setTitle={setTitle}
+            author={author}
+            setAuthor={setAuthor}
+            url={url}
+            setUrl={setUrl}
+          />
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}
