@@ -52,8 +52,14 @@ describe('there are 2 blogs saved initially', () => {
     }
 
     test('a valid blog can be added ', async () => {
+      const response = await api.post('/api/login').send({
+        username:'root',
+        password:'sekret',
+      }).expect(200).expect('Content-Type', /application\/json/)
+      const token = response.body.token
       await api
         .post('/api/blogs')
+        .set('Authorization', 'bearer ' + token)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -66,8 +72,14 @@ describe('there are 2 blogs saved initially', () => {
     })
 
     test('likes gets default value 0 if it is not given', async () => {
+      const response = await api.post('/api/login').send({
+        username:'root',
+        password:'sekret',
+      }).expect(200).expect('Content-Type', /application\/json/)
+      const token = response.body.token
       await api
         .post('/api/blogs')
+        .set('Authorization', 'bearer ' + token)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -82,11 +94,30 @@ describe('there are 2 blogs saved initially', () => {
     })
 
     test('blog is rejected if it does not contain title or url', async () => {
+      const response = await api.post('/api/login').send({
+        username:'root',
+        password:'sekret',
+      }).expect(200).expect('Content-Type', /application\/json/)
+      const token = response.body.token
       const newInvalidBlog = {
         title: 'Sex and the City',
         author: 'Carmen Mcguill'
       }
-      await api.post('/api/blogs').send(newInvalidBlog).expect(400)
+      await api
+        .post('/api/blogs')
+        .set('Authorization', 'bearer ' + token)
+        .send(newInvalidBlog)
+        .expect(400)
+      const blogsAtEnd = await helper.blogsInDb()
+      expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
+    })
+
+    test('blog cannot be added without valid token ', async () => {
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd.length).toBe(helper.initialBlogs.length)
     })
@@ -94,9 +125,17 @@ describe('there are 2 blogs saved initially', () => {
 
   describe('deleting existing note', () => {
     test('blog is deleted if correct id is given', async () => {
+      const response = await api.post('/api/login').send({
+        username:'root',
+        password:'sekret',
+      }).expect(200).expect('Content-Type', /application\/json/)
+      const token = response.body.token
       const blogsAtBeginning = await helper.blogsInDb()
       const id = blogsAtBeginning[0].id
-      await api.delete(`/api/blogs/${id}`).expect(204)
+      await api
+        .delete(`/api/blogs/${id}`)
+        .set('Authorization', 'bearer ' + token)
+        .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd.length).toBe(helper.initialBlogs.length - 1)
