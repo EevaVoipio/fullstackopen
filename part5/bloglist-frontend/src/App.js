@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Blogform from './components/Blogform'
 import Button from './components/Button'
-import Login from './components/Login'
+import Loginform from './components/Loginform'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -12,11 +13,10 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+
+  const blogFormRef = useRef()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -49,22 +49,15 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault()
+  const handleCreateBlog = async (blogObject) => {
     try {
-      const blog = await blogService.create({
-        title: title,
-        author: author,
-        url: url
-      })
+      const blog = await blogService.create(blogObject)
       setBlogs(blogs.concat(blog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setSuccessMessage(`a new blog ${title} by ${author} added`)
+      setSuccessMessage(`new blog added`)
       setTimeout(() => {
         setSuccessMessage(null)
       }, 5000)
+      blogFormRef.current.toggleVisibility()
     } catch (exception) {
       setErrorMessage(
         'blog could not be added, mandatory information is missing'
@@ -88,6 +81,12 @@ const App = () => {
     }
   }, [])
 
+  const blogForm = () => (
+    <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <Blogform handleCreateBlog={handleCreateBlog} />
+    </Togglable>
+  )
+
   return (
     <div>
       <Notification
@@ -95,7 +94,7 @@ const App = () => {
         type={errorMessage != null ? 'error' : 'success'}
       />
       {user === null && (
-        <Login
+        <Loginform
           setUsername={setUsername}
           setPassword={setPassword}
           handleLogin={handleLogin}
@@ -110,15 +109,7 @@ const App = () => {
             {user.name} logged in{' '}
             <Button handleClick={handleLogout} text='logout' />
           </p>
-          <Blogform
-            handleCreateBlog={handleCreateBlog}
-            title={title}
-            setTitle={setTitle}
-            author={author}
-            setAuthor={setAuthor}
-            url={url}
-            setUrl={setUrl}
-          />
+          {blogForm()}
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
           ))}

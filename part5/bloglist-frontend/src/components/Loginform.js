@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Login = ({
+const Loginform = ({
   setUsername,
   setPassword,
   handleLogin,
@@ -35,4 +35,4 @@ const Login = ({
   )
 }
 
-export default Login
+export default Loginform
