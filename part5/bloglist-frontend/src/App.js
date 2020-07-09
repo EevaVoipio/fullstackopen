@@ -15,6 +15,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+  const [update, setUpdate] = useState(null)
 
   const blogFormRef = useRef()
 
@@ -68,9 +69,44 @@ const App = () => {
     }
   }
 
+  const handleLikeBlog = async (id, blogObject) => {
+    try {
+      const updatedBlog = await blogService.update(id, blogObject)
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)))
+      setSuccessMessage(`successfully liked ${updatedBlog.title}`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
+    } catch (exception) {
+      setErrorMessage('something bad happened')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  const handleRemoveBlog = async (id, title, author) => {
+    if (window.confirm(`Remove ${title} by ${author}?`)) {
+      try {
+        await blogService.deleteBlog(id)
+        setBlogs(blogs.filter((blog) => blog.id !== id))
+        setSuccessMessage(`${title} was successfully removed`)
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
+      } catch (exception) {
+        setErrorMessage('something bad happened')
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      }
+    }
+  }
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    setUpdate(null)
+  }, [update])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -110,9 +146,18 @@ const App = () => {
             <Button handleClick={handleLogout} text='logout' />
           </p>
           {blogForm()}
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+          {blogs
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => (
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleLikeBlog={handleLikeBlog}
+                handleRemoveBlog={handleRemoveBlog}
+                setUpdate={setUpdate}
+                user={user}
+              />
+            ))}
         </div>
       )}
     </div>

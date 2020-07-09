@@ -1,9 +1,8 @@
-POST http://localhost:3003/api/blogs
+POST http://localhost:3003/api/login
 Content-Type: application/json
 
+
 {
-    "title":"Lähiömutsi",
-    "author":"Hanne Valtari",
-    "url":"https://lahiomutsi.fi/",
-    "likes":5
+    "username": "roo2",
+    "password": "sekret"
 }
