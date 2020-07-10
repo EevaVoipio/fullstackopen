@@ -39,13 +39,14 @@ const Blog = ({ blog, handleLikeBlog, handleRemoveBlog, user, setUpdate }) => {
     <div style={blogStyle}>
       {!showDetails && (
         <div>
-          {blog.title} <Button handleClick={handleSetShowDetails} text='view' />
+          {blog.title} {blog.author}
+          <Button handleClick={handleSetShowDetails} text='view' />
         </div>
       )}
       {showDetails && (
         <div>
           <div>
-            {blog.title}{' '}
+            {blog.title} {blog.author}
             <Button handleClick={handleSetShowDetails} text='hide' />
           </div>
           <div>{blog.url}</div>
