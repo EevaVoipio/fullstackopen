@@ -36,21 +36,21 @@ const Blog = ({ blog, handleLikeBlog, handleRemoveBlog, user, setUpdate }) => {
   }
   // {blog.author}
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} id='blog'>
       {!showDetails && (
-        <div>
+        <div id='blogtitle'>
           {blog.title} {blog.author}
           <Button handleClick={handleSetShowDetails} text='view' />
         </div>
       )}
       {showDetails && (
         <div>
-          <div>
+          <div id='blogtitle'>
             {blog.title} {blog.author}
             <Button handleClick={handleSetShowDetails} text='hide' />
           </div>
           <div>{blog.url}</div>
-          <div>
+          <div id='likes'>
             likes {blog.likes} <Button handleClick={handleLike} text='like' />
           </div>
           <div>{blog.user['name']}</div>
