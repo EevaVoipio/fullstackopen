@@ -5,6 +5,7 @@ import {
   setNotification,
   clearNotification
 } from '../reducers/notificationReducer'
+import anecdoteService from '../services/anecdotes'
 
 const NewAnecdote = (props) => {
   const dispatch = useDispatch()
@@ -13,7 +14,9 @@ const NewAnecdote = (props) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    dispatch(createAnecdote(content))
+    anecdoteService
+      .addAnecdote({ content: content, votes: 0 })
+      .then((anecdote) => dispatch(createAnecdote(anecdote)))
     dispatch(setNotification(`You created ${content}`))
     setTimeout(() => {
       dispatch(clearNotification())
