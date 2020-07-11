@@ -1,9 +1,11 @@
 const initialState = null
 
-export const setNotification = (notification) => {
-  return {
-    type: 'SET_NOTIFICATION',
-    data: notification
+export const setNotification = (notification, timeout) => {
+  return async (dispatch) => {
+    dispatch({ type: 'SET_NOTIFICATION', data: notification })
+    setTimeout(() => {
+      dispatch({ type: 'CLEAR_NOTIFICATION' })
+    }, timeout * 1000)
   }
 }
 

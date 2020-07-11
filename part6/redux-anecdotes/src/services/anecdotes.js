@@ -11,4 +11,10 @@ const addAnecdote = (anecdoteObject) => {
   return axios.post(baseUrl, anecdoteObject).then((response) => response.data)
 }
 
-export default { getAll, addAnecdote }
+const vote = (id, anecdoteObject) => {
+  return axios
+    .put(`${baseUrl}/${id}`, anecdoteObject)
+    .then((response) => response.data)
+}
+
+export default { getAll, addAnecdote, vote }
