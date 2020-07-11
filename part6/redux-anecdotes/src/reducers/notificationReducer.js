@@ -1,9 +1,11 @@
 const initialState = null
+let timeoutId
 
 export const setNotification = (notification, timeout) => {
   return async (dispatch) => {
+    clearTimeout(timeoutId)
     dispatch({ type: 'SET_NOTIFICATION', data: notification })
-    setTimeout(() => {
+    timeoutId = setTimeout(() => {
       dispatch({ type: 'CLEAR_NOTIFICATION' })
     }, timeout * 1000)
   }
