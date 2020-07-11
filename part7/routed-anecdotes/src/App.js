@@ -7,6 +7,7 @@ import {
   useHistory,
   useRouteMatch
 } from 'react-router-dom'
+import { useField } from './hooks'
 
 const Menu = () => {
   const padding = {
@@ -14,15 +15,15 @@ const Menu = () => {
   }
   return (
     <div>
-      <a href='#' style={padding}>
+      <Link style={padding} to='/'>
         anecdotes
-      </a>
-      <a href='#' style={padding}>
+      </Link>
+      <Link style={padding} to='/new'>
         create new
-      </a>
-      <a href='#' style={padding}>
+      </Link>
+      <Link style={padding} to='/about'>
         about
-      </a>
+      </Link>
     </div>
   )
 }
@@ -86,19 +87,26 @@ const Footer = () => (
 
 const CreateNew = (props) => {
   const history = useHistory()
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const content = useField('text')
+  const author = useField('text')
+  const info = useField('text')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.content.value,
+      author: author.content.value,
+      info: info.content.value,
       votes: 0
     })
     history.push('/')
+  }
+
+  const handleReset = (e) => {
+    e.preventDefault()
+    content.reset(e)
+    author.reset(e)
+    info.reset(e)
   }
 
   return (
@@ -107,29 +115,18 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name='content'
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <input {...content.content} />
         </div>
         <div>
           author
-          <input
-            name='author'
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          <input {...author.content} />
         </div>
         <div>
           url for more info
-          <input
-            name='info'
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          <input {...info.content} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
@@ -152,10 +149,6 @@ const App = () => {
       id: '2'
     }
   ])
-
-  const padding = {
-    padding: 5
-  }
 
   const [notification, setNotification] = useState('')
 
@@ -182,23 +175,10 @@ const App = () => {
     ? anecdotes.find((anecdote) => anecdote.id === match.params.id)
     : null
 
-  console.log(anecdote)
-
   return (
     <div>
       <h1>Software anecdotes</h1>
-      <div>
-        <Link style={padding} to='/'>
-          anecdotes
-        </Link>
-        <Link style={padding} to='/new'>
-          create new
-        </Link>
-        <Link style={padding} to='/about'>
-          about
-        </Link>
-      </div>
-
+      <Menu />
       <Switch>
         <Route path='/anecdotes/:id'>
           <Anecdote anecdote={anecdote} />
