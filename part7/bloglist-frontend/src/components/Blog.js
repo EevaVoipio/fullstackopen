@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Button from './Button'
 //import blogService from '../services/blogs'
 
-const Blog = ({ blog, handleLikeBlog, handleRemoveBlog, user, setUpdate }) => {
+const Blog = ({ blog, handleLikeBlog, handleRemoveBlog, user }) => {
   const [showDetails, setShowDetails] = useState(false)
   const handleSetShowDetails = () => {
     setShowDetails(!showDetails)
@@ -19,7 +19,6 @@ const Blog = ({ blog, handleLikeBlog, handleRemoveBlog, user, setUpdate }) => {
       likes: likes
     }
     handleLikeBlog(blog.id, newBlog)
-    setUpdate(1)
   }
 
   const handleRemove = async (event) => {
@@ -34,7 +33,7 @@ const Blog = ({ blog, handleLikeBlog, handleRemoveBlog, user, setUpdate }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  // {blog.author}
+
   return (
     <div style={blogStyle} id='blog'>
       {!showDetails && (

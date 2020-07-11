@@ -9,14 +9,19 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
+import {
+  initializeBlogs,
+  createBlog,
+  likeBlog,
+  deleteBlog
+} from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [update, setUpdate] = useState(null)
   const dispatch = useDispatch()
+  const blogs = useSelector((state) => state.blogs)
 
   const blogFormRef = useRef()
 
@@ -43,7 +48,9 @@ const App = () => {
         )
       )
     } catch (exception) {
-      dispatch(setNotification({ message: 'wrong credentials', type: 'error' }))
+      dispatch(
+        setNotification({ message: 'wrong credentials', type: 'error' }, 5)
+      )
     }
   }
 
@@ -55,12 +62,11 @@ const App = () => {
 
   const handleCreateBlog = async (blogObject) => {
     try {
-      const blog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(blog))
+      dispatch(createBlog(blogObject))
       dispatch(
         setNotification(
           {
-            message: `new blog ${blog.title} added`,
+            message: `new blog ${blogObject.title} added`,
             type: 'success'
           },
           5
@@ -83,12 +89,11 @@ const App = () => {
 
   const handleLikeBlog = async (id, blogObject) => {
     try {
-      const updatedBlog = await blogService.update(id, blogObject)
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)))
+      dispatch(likeBlog(id, blogObject))
       dispatch(
         setNotification(
           {
-            message: `successfully liked ${updatedBlog.title}`,
+            message: `successfully liked ${blogObject.title}`,
             type: 'success'
           },
           5
@@ -104,8 +109,7 @@ const App = () => {
   const handleRemoveBlog = async (id, title, author) => {
     if (window.confirm(`Remove ${title} by ${author}?`)) {
       try {
-        await blogService.deleteBlog(id)
-        setBlogs(blogs.filter((blog) => blog.id !== id))
+        dispatch(deleteBlog(id))
         dispatch(
           setNotification(
             {
@@ -127,9 +131,8 @@ const App = () => {
   }
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-    setUpdate(null)
-  }, [update])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -175,7 +178,6 @@ const App = () => {
                   blog={blog}
                   handleLikeBlog={handleLikeBlog}
                   handleRemoveBlog={handleRemoveBlog}
-                  setUpdate={setUpdate}
                   user={user}
                 />
               ))}
