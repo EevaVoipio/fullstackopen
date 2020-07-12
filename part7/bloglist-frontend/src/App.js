@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Blog from './components/Blog'
+import Bloglist from './components/Bloglist'
 import Blogform from './components/Blogform'
 import Button from './components/Button'
 import Loginform from './components/Loginform'
@@ -9,12 +9,7 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import { setNotification } from './reducers/notificationReducer'
-import {
-  initializeBlogs,
-  createBlog,
-  likeBlog,
-  deleteBlog
-} from './reducers/blogReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -87,49 +82,6 @@ const App = () => {
     }
   }
 
-  const handleLikeBlog = async (id, blogObject) => {
-    try {
-      dispatch(likeBlog(id, blogObject))
-      dispatch(
-        setNotification(
-          {
-            message: `successfully liked ${blogObject.title}`,
-            type: 'success'
-          },
-          5
-        )
-      )
-    } catch (exception) {
-      dispatch(
-        setNotification({ message: 'something bad happened', type: 'error' }, 5)
-      )
-    }
-  }
-
-  const handleRemoveBlog = async (id, title, author) => {
-    if (window.confirm(`Remove ${title} by ${author}?`)) {
-      try {
-        dispatch(deleteBlog(id))
-        dispatch(
-          setNotification(
-            {
-              message: `${title} was successfully removed`,
-              type: 'success'
-            },
-            5
-          )
-        )
-      } catch (exception) {
-        dispatch(
-          setNotification(
-            { message: 'something bad happened', type: 'error' },
-            5
-          )
-        )
-      }
-    }
-  }
-
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch])
@@ -169,19 +121,7 @@ const App = () => {
             <Button handleClick={handleLogout} text='logout' />
           </p>
           {blogForm()}
-          <div id='bloglist'>
-            {blogs
-              .sort((a, b) => b.likes - a.likes)
-              .map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  handleLikeBlog={handleLikeBlog}
-                  handleRemoveBlog={handleRemoveBlog}
-                  user={user}
-                />
-              ))}
-          </div>
+          <Bloglist blogs={blogs} user={user} />
         </div>
       )}
     </div>

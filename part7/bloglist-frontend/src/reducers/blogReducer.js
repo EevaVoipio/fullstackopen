@@ -44,7 +44,7 @@ const reducer = (state = [], action) => {
   switch (action.type) {
     case 'NEW_BLOG':
       return [...state, action.data]
-    case 'LIKE':
+    case 'LIKE': {
       const updateId = action.data.id
       const initialBlog = state.find((blog) => blog.id === updateId)
       const updatedBlog = {
@@ -52,8 +52,7 @@ const reducer = (state = [], action) => {
         likes: initialBlog.likes + 1
       }
       return state.map((blog) => (blog.id !== updateId ? blog : updatedBlog))
-    case 'INIT_BLOGS':
-      return action.data
+    }
     case 'INIT_BLOGS':
       return action.data
     case 'DELETE_BLOG':

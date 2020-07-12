@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import Button from './Button'
-//import blogService from '../services/blogs'
+import { useDispatch } from 'react-redux'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, handleLikeBlog, handleRemoveBlog, user }) => {
+const Blog = ({ blog, user }) => {
+  const dispatch = useDispatch()
   const [showDetails, setShowDetails] = useState(false)
   const handleSetShowDetails = () => {
     setShowDetails(!showDetails)
@@ -18,12 +21,47 @@ const Blog = ({ blog, handleLikeBlog, handleRemoveBlog, user }) => {
       user: blog.user._id,
       likes: likes
     }
-    handleLikeBlog(blog.id, newBlog)
+    try {
+      dispatch(likeBlog(blog.id, newBlog))
+      dispatch(
+        setNotification(
+          {
+            message: `successfully liked ${newBlog.title}`,
+            type: 'success'
+          },
+          5
+        )
+      )
+    } catch (exception) {
+      dispatch(
+        setNotification({ message: 'something bad happened', type: 'error' }, 5)
+      )
+    }
   }
 
   const handleRemove = async (event) => {
     event.preventDefault()
-    handleRemoveBlog(blog.id, blog.title, blog.author)
+    if (window.confirm(`Remove ${blog.title} by ${blog.author}?`)) {
+      try {
+        dispatch(deleteBlog(blog.id))
+        dispatch(
+          setNotification(
+            {
+              message: `${blog.title} was successfully removed`,
+              type: 'success'
+            },
+            5
+          )
+        )
+      } catch (exception) {
+        dispatch(
+          setNotification(
+            { message: 'something bad happened', type: 'error' },
+            5
+          )
+        )
+      }
+    }
   }
 
   const blogStyle = {
