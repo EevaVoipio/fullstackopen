@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Link,
@@ -16,6 +15,7 @@ import Loginform from './components/Loginform'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import UserList from './components/UserList'
+import User from './components/User'
 
 import { setNotification } from './reducers/notificationReducer'
 import { loginUser, logoutUser, getUser } from './reducers/userReducer'
@@ -27,6 +27,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
+  const userList = useSelector((state) => state.userList)
 
   const blogFormRef = useRef()
 
@@ -97,21 +98,29 @@ const App = () => {
     </Togglable>
   )
 
+  const match = useRouteMatch('/users/:id')
+  const userForPage = match
+    ? userList.find((user) => user.id === match.params.id)
+    : null
+
   return (
     <div>
       {user !== null && (
         <div>
           <Notification />
-          <h2>blogs</h2>
+          <h1>blogs</h1>
           <p>
             {user.name} logged in{' '}
             <Button handleClick={handleLogout} text='logout' />
           </p>
           <Switch>
+            <Route path='/users/:id'>
+              <User user={userForPage} />
+            </Route>
             <Route path='/users'>
               <div>
-                <h2>Users</h2>
-                <UserList />
+                <h1>Users</h1>
+                <UserList userList={userList} />
               </div>
             </Route>
 

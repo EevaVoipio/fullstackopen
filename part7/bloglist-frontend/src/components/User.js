@@ -1,17 +1,21 @@
-/*import React from 'react'
-import { useSelector } from 'react-redux'
+import React from 'react'
 
-const User = (user, blogs) => {
-  //const blogs = useSelector((state) => state.blogs)
+const User = ({ user }) => {
+  if (!user) {
+    return null
+  }
+
   return (
     <div>
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Blog key={blog.id} blog={blog} user={user} />
+      <h1>{user.name}</h1>
+      <h3>added blogs</h3>
+      <ul>
+        {user.blogs.map((blog) => (
+          <li key={blog.id}>{blog.title}</li>
         ))}
+      </ul>
     </div>
   )
 }
 
-export default User*/
+export default User

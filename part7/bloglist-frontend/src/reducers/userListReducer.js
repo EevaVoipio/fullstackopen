@@ -4,7 +4,6 @@ const baseUrl = '/api/users'
 export const initializeUsers = () => {
   return async (dispatch) => {
     const users = await blogService.getAll(baseUrl)
-    console.log(users)
     dispatch({
       type: 'INIT_USERS',
       data: users

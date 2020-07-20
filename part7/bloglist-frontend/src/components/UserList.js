@@ -1,8 +1,6 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 
-const Userlist = () => {
-  const userList = useSelector((state) => state.userList)
+const Userlist = ({ userList }) => {
   return (
     <div>
       <div className='flex'>
@@ -12,16 +10,18 @@ const Userlist = () => {
         </div>
       </div>
       {userList.map((user) => (
-        <UserInfo key={user.id} user={user} />
+        <UserListInfo key={user.id} user={user} />
       ))}
     </div>
   )
 }
 
-const UserInfo = ({ user }) => {
+const UserListInfo = ({ user }) => {
   return (
     <div className='flex'>
-      <div>{user.name}</div>
+      <div>
+        <a href={'/users/' + user.id}> {user.name} </a>
+      </div>
       <div className='right-flex'>{user.blogs.length}</div>
     </div>
   )
