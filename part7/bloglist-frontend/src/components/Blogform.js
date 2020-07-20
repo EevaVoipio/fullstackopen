@@ -7,7 +7,7 @@ const Blogform = ({ handleCreateBlog }) => {
 
   const createBlog = async (event) => {
     event.preventDefault()
-    handleCreateBlog({
+    await handleCreateBlog({
       title: title,
       author: author,
       url: url

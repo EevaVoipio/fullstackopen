@@ -17,3 +17,14 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+
+.flex {
+  width: 60%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.right-flex {
+  width: 70%;
+  align-self: flex-start;
+}

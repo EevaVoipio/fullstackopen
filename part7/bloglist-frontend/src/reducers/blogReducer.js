@@ -1,8 +1,9 @@
 import blogService from '../services/blogs'
+const baseUrl = '/api/blogs'
 
 export const createBlog = (blogObject) => {
   return async (dispatch) => {
-    const newBlog = await blogService.create(blogObject)
+    const newBlog = await blogService.create(baseUrl, blogObject)
     dispatch({
       type: 'NEW_BLOG',
       data: newBlog
@@ -12,7 +13,7 @@ export const createBlog = (blogObject) => {
 
 export const likeBlog = (id, blog) => {
   return async (dispatch) => {
-    await blogService.update(id, { ...blog, likes: blog.likes + 1 })
+    await blogService.update(baseUrl, id, { ...blog, likes: blog.likes + 1 })
     dispatch({
       type: 'LIKE',
       data: { id }
@@ -22,17 +23,17 @@ export const likeBlog = (id, blog) => {
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
-    const anecdotes = await blogService.getAll()
+    const blogs = await blogService.getAll(baseUrl)
     dispatch({
       type: 'INIT_BLOGS',
-      data: anecdotes
+      data: blogs
     })
   }
 }
 
 export const deleteBlog = (id) => {
   return async (dispatch) => {
-    await blogService.deleteBlog(id)
+    await blogService.deleteBlog(baseUrl, id)
     dispatch({
       type: 'DELETE_BLOG',
       data: { id }

@@ -36,9 +36,9 @@ blogsRouter.post('/', async (request, response) => {
     author: body.author,
     url: body.url,
     likes : body.likes,
-    user: user._id })
+    user: user })
   const savedBlog = await blog.save()
-  user.notes = user.blogs.concat(savedBlog._id)
+  user.blogs = user.blogs.concat(savedBlog)
   await user.save()
   response.status(201).json(savedBlog)
 })
@@ -52,9 +52,13 @@ blogsRouter.delete('/:id', async (request, response) => {
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
   }
-  const blog = await Blog.findById(request.params.id)
+  const id = request.params.id
+  const blog = await Blog.findById(id)
   if (blog.user.toString() === decodedToken.id.toString()) {
-    await Blog.findByIdAndRemove(request.params.id)
+    await Blog.findByIdAndRemove(id)
+    const user = await User.findById(decodedToken.id)
+    user.blogs = user.blogs.filter(blog => blog._id.toString() === id)
+    await user.save()
     response.status(204).end()
   } else {
     return response.status(401).json({ error: 'user is only allowed to remove his/her own blogs' })
