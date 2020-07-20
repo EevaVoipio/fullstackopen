@@ -10,13 +10,13 @@ const Userlist = ({ userList }) => {
         </div>
       </div>
       {userList.map((user) => (
-        <UserListInfo key={user.id} user={user} />
+        <User key={user.id} user={user} />
       ))}
     </div>
   )
 }
 
-const UserListInfo = ({ user }) => {
+const User = ({ user }) => {
   return (
     <div className='flex'>
       <div>

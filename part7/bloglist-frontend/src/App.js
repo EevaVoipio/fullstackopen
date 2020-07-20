@@ -15,7 +15,8 @@ import Loginform from './components/Loginform'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import UserList from './components/UserList'
-import User from './components/User'
+import UserInfo from './components/UserInfo'
+import BlogInfo from './components/BlogInfo'
 
 import { setNotification } from './reducers/notificationReducer'
 import { loginUser, logoutUser, getUser } from './reducers/userReducer'
@@ -28,6 +29,7 @@ const App = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
   const userList = useSelector((state) => state.userList)
+  const blogs = useSelector((state) => state.blogs)
 
   const blogFormRef = useRef()
 
@@ -98,9 +100,14 @@ const App = () => {
     </Togglable>
   )
 
-  const match = useRouteMatch('/users/:id')
-  const userForPage = match
-    ? userList.find((user) => user.id === match.params.id)
+  const userMatch = useRouteMatch('/users/:id')
+  const userForInfoPage = userMatch
+    ? userList.find((user) => user.id === userMatch.params.id)
+    : null
+
+  const blogMatch = useRouteMatch('/blogs/:id')
+  const blogForInfoPage = blogMatch
+    ? blogs.find((blog) => blog.id === blogMatch.params.id)
     : null
 
   return (
@@ -115,7 +122,7 @@ const App = () => {
           </p>
           <Switch>
             <Route path='/users/:id'>
-              <User user={userForPage} />
+              <UserInfo user={userForInfoPage} />
             </Route>
             <Route path='/users'>
               <div>
@@ -123,11 +130,13 @@ const App = () => {
                 <UserList userList={userList} />
               </div>
             </Route>
-
+            <Route path='/blogs/:id'>
+              <BlogInfo blog={blogForInfoPage} user={user} />
+            </Route>
             <Route path='/'>
               <div>
                 {blogForm()}
-                <Bloglist />
+                <Bloglist blogs={blogs} user={user} />
               </div>
             </Route>
           </Switch>
