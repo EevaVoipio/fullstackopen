@@ -1,22 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  Switch,
-  Route,
-  Link,
-  useHistory,
-  useRouteMatch
-} from 'react-router-dom'
+import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom'
 
 import Bloglist from './components/Bloglist'
 import Blogform from './components/Blogform'
-import Button from './components/Button'
 import Loginform from './components/Loginform'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import UserList from './components/UserList'
 import UserInfo from './components/UserInfo'
 import BlogInfo from './components/BlogInfo'
+import Menu from './components/Menu'
 
 import { setNotification } from './reducers/notificationReducer'
 import { loginUser, logoutUser, getUser } from './reducers/userReducer'
@@ -114,12 +108,9 @@ const App = () => {
     <div>
       {user !== null && (
         <div>
+          <Menu user={user} handleLogout={handleLogout} />
           <Notification />
-          <h1>blogs</h1>
-          <p>
-            {user.name} logged in{' '}
-            <Button handleClick={handleLogout} text='logout' />
-          </p>
+          <h1>blog app</h1>
           <Switch>
             <Route path='/users/:id'>
               <UserInfo user={userForInfoPage} />
