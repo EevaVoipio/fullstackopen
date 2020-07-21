@@ -1,3 +1,8 @@
+body {
+  color: rgb(7, 14, 80);
+  font-family: 'cezanne';
+}
+
 .error {
   color: red;
   background: lightgrey;
@@ -22,14 +27,77 @@
   width: 60%;
   display: flex;
   justify-content: space-between;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .right-flex {
-  width: 70%;
   align-self: flex-start;
 }
 
+.content {
+  text-align: center;
+}
+
 .menu {
-  background: lightgrey;
-  padding: 10px;
+  color: rgb(7, 14, 80);
+  height: 40px;
+  padding-top: 0.5rem;
+  padding-right: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  font-family: 'cezanne';
+  font-size: 1.15rem;
+}
+
+.links {
+  color: rgb(7, 14, 140);
+}
+
+.header {
+  color: rgb(7, 14, 80);
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+}
+
+.button {
+  background: rgb(250, 250, 255);
+  margin: 0.3rem;
+  align-self: left;
+}
+
+.table-striped > tbody > tr:nth-child(odd) > td,
+.table-striped > tbody > tr:nth-child(odd) > th {
+  background-color: rgba(7, 14, 150, 0.05);
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+  background-color: rgba(7, 14, 150, 0.1);
+}
+
+.table {
+  margin-top: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+
+.form-group {
+  margin-top: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+}
+
+.form-label {
+  text-align: left;
+}
+
+.form-header {
+  text-align: left;
+  margin-top: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
 }

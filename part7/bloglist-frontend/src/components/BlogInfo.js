@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Form } from 'react-bootstrap'
+import { useDispatch } from 'react-redux'
 
 import Button from './Button'
-import { useDispatch } from 'react-redux'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+
+import { likeBlog, deleteBlog, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const BlogInfo = ({ blog, user }) => {
   const dispatch = useDispatch()
+  const [comment, setComment] = useState('')
 
   const handleLike = async (event) => {
     event.preventDefault()
@@ -18,8 +21,6 @@ const BlogInfo = ({ blog, user }) => {
       user: blog.user._id,
       likes: likes
     }
-    console.log(blog)
-    console.log(newBlog)
     try {
       dispatch(likeBlog(blog.id, newBlog))
       dispatch(
@@ -63,23 +64,65 @@ const BlogInfo = ({ blog, user }) => {
     }
   }
 
+  const addComment = async (event) => {
+    event.preventDefault()
+    const updatedBlog = {
+      ...blog,
+      comments: blog.comments.concat(comment),
+      user: blog.user._id
+    }
+    dispatch(commentBlog(blog.id, updatedBlog))
+    setComment('')
+  }
+
   if (!blog) {
     return null
   }
 
+  let index = 0 //Could this cause problems?
+
   return (
     <div>
-      <h1>{blog.title}</h1>
+      <h2 className='header'>{blog.title}</h2>
       <div>
         <a href={blog.url}>{blog.url}</a>
       </div>
       <div id='likes'>
-        {blog.likes} likes <Button handleClick={handleLike} text='like' />
+        {blog.likes} likes
+        <Button handleClick={handleLike} text='Like' />
       </div>
-      <div>added by {blog.user.name}</div>
+      <div>Added by {blog.user.name}</div>
       {user.username === blog.user.username && (
         <Button handleClick={handleRemove} text='remove' />
       )}
+      <div>
+        <h3>Comments</h3>
+        <ul>
+          {blog.comments.map((comment) => (
+            <div key={index++}>{comment}</div>
+          ))}
+        </ul>
+        <Form>
+          <Form.Group>
+            <Form.Control
+              className='form'
+              size='sm'
+              id='comment'
+              type='text'
+              value={comment}
+              name='Comment'
+              placeholder='Add a comment...'
+              onChange={({ target }) => setComment(target.value)}
+            />
+            <Button
+              handleClick={addComment}
+              id='comment-submit-button'
+              type='submit'
+              text='Comment'
+            />
+          </Form.Group>
+        </Form>
+      </div>
     </div>
   )
 }

@@ -1,32 +1,34 @@
 import React from 'react'
+import { Table } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
-const Bloglist = ({ blogs, user }) => {
+const Bloglist = ({ blogs }) => {
   return (
     <div id='bloglist'>
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Blog key={blog.id} blog={blog} />
-        ))}
+      <Table striped hover>
+        <tbody>
+          {blogs
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => (
+              <tr key={blog.id}>
+                <td>
+                  <Blog blog={blog} />
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </Table>
     </div>
   )
 }
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   return (
-    <div style={blogStyle} id='blog'>
+    <div id='blog'>
       <div id='blogtitle'>
-        <a href={'/blogs/' + blog.id}>
+        <Link className='links' to={'/blogs/' + blog.id}>
           {blog.title} {blog.author}
-        </a>
+        </Link>
       </div>
     </div>
   )

@@ -32,11 +32,13 @@ blogsRouter.post('/', async (request, response) => {
 
   const user = await User.findById(decodedToken.id)
   const body = request.body
-  const blog = new Blog({ title: body.title,
+  const blog = new Blog({
+    title: body.title,
     author: body.author,
     url: body.url,
-    likes : body.likes,
-    user: user })
+    likes: body.likes,
+    user: user
+  })
   const savedBlog = await blog.save()
   user.blogs = user.blogs.concat(savedBlog)
   await user.save()
@@ -57,15 +59,28 @@ blogsRouter.delete('/:id', async (request, response) => {
   if (blog.user.toString() === decodedToken.id.toString()) {
     await Blog.findByIdAndRemove(id)
     const user = await User.findById(decodedToken.id)
-    user.blogs = user.blogs.filter(blog => blog._id.toString() === id)
+    user.blogs = user.blogs.filter((blog) => blog._id.toString() !== id)
     await user.save()
     response.status(204).end()
   } else {
-    return response.status(401).json({ error: 'user is only allowed to remove his/her own blogs' })
+    return response
+      .status(401)
+      .json({ error: 'user is only allowed to remove his/her own blogs' })
   }
 })
 
 blogsRouter.put('/:id', async (request, response) => {
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    request.params.id,
+    request.body,
+    {
+      new: true
+    }
+  )
+  response.json(updatedBlog)
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
     request.body,

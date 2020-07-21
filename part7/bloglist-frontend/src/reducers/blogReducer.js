@@ -1,4 +1,5 @@
 import blogService from '../services/blogs'
+
 const baseUrl = '/api/blogs'
 
 export const createBlog = (blogObject) => {
@@ -41,6 +42,16 @@ export const deleteBlog = (id) => {
   }
 }
 
+export const commentBlog = (id, blog) => {
+  return async (dispatch) => {
+    const newBlog = await blogService.commentBlog(baseUrl, id, blog)
+    dispatch({
+      type: 'COMMENT',
+      data: { id, newBlog }
+    })
+  }
+}
+
 const reducer = (state = [], action) => {
   switch (action.type) {
     case 'NEW_BLOG':
@@ -59,6 +70,14 @@ const reducer = (state = [], action) => {
     case 'DELETE_BLOG':
       const removeId = action.data.id
       return state.filter((blog) => blog.id !== removeId)
+    case 'COMMENT':
+      const commentId = action.data.id
+      const uncommentedBlog = state.find((blog) => blog.id === commentId)
+      const commentedBlog = {
+        ...uncommentedBlog,
+        comments: action.data.newBlog.comments
+      }
+      return state.map((blog) => (blog.id !== commentId ? blog : commentedBlog))
     default:
       return state
   }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Switch, Route, useHistory, useRouteMatch } from 'react-router-dom'
+import { Switch, Route, useRouteMatch } from 'react-router-dom'
 
 import Bloglist from './components/Bloglist'
 import Blogform from './components/Blogform'
@@ -57,6 +57,7 @@ const App = () => {
   const handleCreateBlog = async (blogObject) => {
     try {
       dispatch(createBlog(blogObject))
+      blogFormRef.current.toggleVisibility()
       dispatch(
         setNotification(
           {
@@ -66,8 +67,6 @@ const App = () => {
           5
         )
       )
-      blogFormRef.current.toggleVisibility()
-      dispatch(initializeUsers())
     } catch (exception) {
       dispatch(
         setNotification(
@@ -82,6 +81,10 @@ const App = () => {
     }
   }
 
+  const handleCancelCreateBlog = async () => {
+    blogFormRef.current.toggleVisibility()
+  }
+
   useEffect(() => {
     dispatch(getUser())
     dispatch(initializeBlogs())
@@ -89,8 +92,11 @@ const App = () => {
   }, [dispatch])
 
   const blogForm = () => (
-    <Togglable buttonLabel='new blog' ref={blogFormRef}>
-      <Blogform handleCreateBlog={handleCreateBlog} />
+    <Togglable ref={blogFormRef}>
+      <Blogform
+        handleCreateBlog={handleCreateBlog}
+        handleCancelCreateBlog={handleCancelCreateBlog}
+      />
     </Togglable>
   )
 
@@ -105,32 +111,36 @@ const App = () => {
     : null
 
   return (
-    <div>
+    <div className='container'>
       {user !== null && (
         <div>
           <Menu user={user} handleLogout={handleLogout} />
           <Notification />
-          <h1>blog app</h1>
-          <Switch>
-            <Route path='/users/:id'>
-              <UserInfo user={userForInfoPage} />
-            </Route>
-            <Route path='/users'>
-              <div>
-                <h1>Users</h1>
-                <UserList userList={userList} />
-              </div>
-            </Route>
-            <Route path='/blogs/:id'>
-              <BlogInfo blog={blogForInfoPage} user={user} />
-            </Route>
-            <Route path='/'>
-              <div>
-                {blogForm()}
-                <Bloglist blogs={blogs} user={user} />
-              </div>
-            </Route>
-          </Switch>
+          <div className='content'>
+            <div>
+              <h1 className='header'>Blog app</h1>
+            </div>
+            <Switch>
+              <Route path='/users/:id'>
+                <UserInfo user={userForInfoPage} />
+              </Route>
+              <Route path='/users'>
+                <div>
+                  <h2 className='header'>Users</h2>
+                  <UserList />
+                </div>
+              </Route>
+              <Route path='/blogs/:id'>
+                <BlogInfo blog={blogForInfoPage} user={user} />
+              </Route>
+              <Route path='/'>
+                <div>
+                  <Bloglist blogs={blogs} />
+                  {blogForm()}
+                </div>
+              </Route>
+            </Switch>
+          </div>
         </div>
       )}
       {user === null && (

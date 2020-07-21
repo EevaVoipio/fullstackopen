@@ -1,4 +1,5 @@
 import React from 'react'
+import { Form, Button } from 'react-bootstrap'
 
 const Loginform = ({
   setUsername,
@@ -10,29 +11,27 @@ const Loginform = ({
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-          <input
+      <Form onSubmit={handleLogin}>
+        <Form.Group>
+          <Form.Label>username</Form.Label>
+          <Form.Control
             id='username'
             type='text'
             value={username}
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
-          password
-          <input
+          <Form.Label>password</Form.Label>
+          <Form.Control
             id='password'
             type='password'
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
-        <button id='login-button' type='submit'>
-          login
-        </button>
-      </form>
+          <Button id='login-button' type='submit'>
+            login
+          </Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }
