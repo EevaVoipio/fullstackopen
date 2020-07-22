@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Form } from 'react-bootstrap'
+import { Form, Row, Col } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 
 import Button from './Button'
@@ -83,30 +84,33 @@ const BlogInfo = ({ blog, user }) => {
 
   return (
     <div>
-      <h2 className='header'>{blog.title}</h2>
-      <div>
-        <a href={blog.url}>{blog.url}</a>
+      <div className='info'>
+        <h2 className='header'>{blog.title} - details</h2>
+        <div>
+          Url {''}
+          <Link className='links' to={blog.url}>
+            {blog.url}
+          </Link>
+        </div>
+        <div id='likes'>
+          {blog.likes} likes
+          <Button handleClick={handleLike} text='Like' />
+        </div>
+        <div>Added by {blog.user.name}</div>
+        {user.username === blog.user.username && (
+          <Button handleClick={handleRemove} text='remove' />
+        )}
+        <h3 className='comment-header'>Comments</h3>
+        {blog.comments.map((comment) => (
+          <p key={index++}>{comment}</p>
+        ))}
       </div>
-      <div id='likes'>
-        {blog.likes} likes
-        <Button handleClick={handleLike} text='Like' />
-      </div>
-      <div>Added by {blog.user.name}</div>
-      {user.username === blog.user.username && (
-        <Button handleClick={handleRemove} text='remove' />
-      )}
-      <div>
-        <h3>Comments</h3>
-        <ul>
-          {blog.comments.map((comment) => (
-            <div key={index++}>{comment}</div>
-          ))}
-        </ul>
-        <Form>
-          <Form.Group>
+      <Form>
+        <Form.Group as={Row}>
+          <Form.Label column sm={1} />
+          <Col sm={7}>
             <Form.Control
-              className='form'
-              size='sm'
+              size='md'
               id='comment'
               type='text'
               value={comment}
@@ -114,15 +118,15 @@ const BlogInfo = ({ blog, user }) => {
               placeholder='Add a comment...'
               onChange={({ target }) => setComment(target.value)}
             />
-            <Button
-              handleClick={addComment}
-              id='comment-submit-button'
-              type='submit'
-              text='Comment'
-            />
-          </Form.Group>
-        </Form>
-      </div>
+          </Col>
+          <Button
+            handleClick={addComment}
+            id='comment-submit-button'
+            type='submit'
+            text='Comment'
+          />
+        </Form.Group>
+      </Form>
     </div>
   )
 }

@@ -77,18 +77,20 @@ const Blogform = ({ handleCreateBlog, handleCancelCreateBlog }) => {
             />
           </Col>
         </Form.Group>
-        <Button
-          handleClick={createBlog}
-          id='blog-submit-button'
-          type='submit'
-          text='Create'
-        />
-        <Button
-          handleClick={cancelCreateBlog}
-          id='blog-submit-button'
-          type='submit'
-          text='Cancel'
-        />
+        <Form.Group as={Row}>
+          <Button
+            handleClick={createBlog}
+            id='blog-submit-button'
+            type='submit'
+            text='Create'
+          />
+          <Button
+            handleClick={cancelCreateBlog}
+            id='blog-submit-button'
+            type='submit'
+            text='Cancel'
+          />
+        </Form.Group>
       </Form>
     </div>
   )

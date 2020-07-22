@@ -3,28 +3,20 @@ body {
   font-family: 'cezanne';
 }
 
-.error {
-  color: red;
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
+.alert-error {
+  background: rgb(255, 255, 255);
+  border: none;
+  text-align: center;
 }
 
-.success {
-  color: green;
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
+.alert-success {
+  background: rgb(255, 255, 255);
+  border: none;
+  text-align: center;
 }
 
 .flex {
-  width: 60%;
+  width: 40%;
   display: flex;
   justify-content: space-between;
   margin-left: auto;
@@ -35,7 +27,7 @@ body {
   align-self: flex-start;
 }
 
-.content {
+.center-content {
   text-align: center;
 }
 
@@ -63,7 +55,10 @@ body {
 .button {
   background: rgb(250, 250, 255);
   margin: 0.3rem;
-  align-self: left;
+}
+
+.button:hover {
+  background: rgb(7, 14, 80);
 }
 
 .table-striped > tbody > tr:nth-child(odd) > td,
@@ -81,6 +76,7 @@ body {
   margin-left: auto;
   margin-right: auto;
   width: 80%;
+  text-align: left;
 }
 
 .form-group {
@@ -100,4 +96,22 @@ body {
   margin-left: auto;
   margin-right: auto;
   width: 60%;
+}
+
+.info {
+  text-align: left;
+  margin-top: 4rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 45%;
+}
+
+.comment-header {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.user-header {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }

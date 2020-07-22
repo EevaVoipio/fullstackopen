@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
+
 import { initializeUsers } from '../reducers/userListReducer'
 
 const Userlist = () => {
@@ -31,10 +33,10 @@ const User = ({ user }) => {
   return (
     <div className='flex'>
       <div>
-        <a className='links' href={'/users/' + user.id}>
+        <Link className='links' to={'/users/' + user.id}>
           {' '}
           {user.name}{' '}
-        </a>
+        </Link>
       </div>
       <div className='right-flex'>{user.blogs.length}</div>
     </div>

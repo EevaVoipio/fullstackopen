@@ -116,7 +116,7 @@ const App = () => {
         <div>
           <Menu user={user} handleLogout={handleLogout} />
           <Notification />
-          <div className='content'>
+          <div className='center-content'>
             <div>
               <h1 className='header'>Blog app</h1>
             </div>

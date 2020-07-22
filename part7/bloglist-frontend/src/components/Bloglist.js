@@ -10,11 +10,7 @@ const Bloglist = ({ blogs }) => {
           {blogs
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
-              <tr key={blog.id}>
-                <td>
-                  <Blog blog={blog} />
-                </td>
-              </tr>
+              <Blog key={blog.id} blog={blog} />
             ))}
         </tbody>
       </Table>
@@ -24,13 +20,13 @@ const Bloglist = ({ blogs }) => {
 
 const Blog = ({ blog }) => {
   return (
-    <div id='blog'>
-      <div id='blogtitle'>
+    <tr>
+      <td>
         <Link className='links' to={'/blogs/' + blog.id}>
-          {blog.title} {blog.author}
+          {blog.title} by {blog.author}
         </Link>
-      </div>
-    </div>
+      </td>
+    </tr>
   )
 }
 
