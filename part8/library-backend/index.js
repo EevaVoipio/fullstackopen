@@ -54,16 +54,13 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      console.log('jee')
-      let returnedBooks = Book.find({})
-      console.log(returnedBooks)
-      console.log('jee')
+    bookCount: async () => await Book.find({}).length,
+    authorCount: async () => await Author.find({}).length,
+    allBooks: async (root, args) => {
+      let returnedBooks = await Book.find({}).populate('author')
       if (args.author) {
         returnedBooks = returnedBooks.filter(
-          (book) => book.author === args.author
+          (book) => book.author.name === args.author
         )
       }
       if (args.genre) {
@@ -76,29 +73,28 @@ const resolvers = {
     allAuthors: () => Author.find({})
   },
   Author: {
-    bookCount: (root) => {
-      return books.filter((book) => book.author === root.name).length
+    bookCount: async (root) => {
+      const books = await Book.find({})
+      const author = await Author.findOne({ name: root.name })
+      return books.filter((book) => book.author.toString() === author.id).length
     }
   },
   Mutation: {
     addBook: async (root, args) => {
-      console.log('Trying to create a book')
       try {
-        let bookAuthor = Author.findOne({ name: args.author })
-        console.log(bookAuthor)
+        let bookAuthor = await Author.findOne({ name: args.author })
         if (!bookAuthor) {
           bookAuthor = new Author({ name: args.author })
           bookAuthor.save()
-          console.log('New author created')
         }
         const book = new Book({ ...args, author: bookAuthor })
         await book.save()
+        return book
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args
         })
       }
-      return book
     },
     editAuthor: (root, args) => {
       const author = authors.find((author) => author.name === args.name)

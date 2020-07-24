@@ -20,7 +20,7 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault()
     const year = Number(published)
-    createBook({ variables: { title, author, year, genres } })
+    await createBook({ variables: { title, author, year, genres } })
 
     setTitle('')
     setPublished('')
