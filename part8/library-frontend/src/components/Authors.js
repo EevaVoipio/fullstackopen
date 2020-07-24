@@ -8,7 +8,7 @@ const Authors = (props) => {
   const [born, setBorn] = useState('')
   const result = useQuery(ALL_AUTHORS)
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
-    refetchQueries: [{ query: ALL_AUTHORS }]
+    refetchQueries: [{ query: ALL_AUTHORS }],
   })
 
   const submit = async (event) => {
@@ -53,6 +53,7 @@ const Authors = (props) => {
         <label>
           name
           <select value={name} onChange={({ target }) => setName(target.value)}>
+            <option key='Select author'>Select author</option>
             {authors.map((a) => (
               <option key={a.name} value={a.name}>
                 {a.name}

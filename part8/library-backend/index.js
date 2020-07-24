@@ -12,7 +12,7 @@ mongoose.set('useCreateIndex', true)
 mongoose
   .connect(config.MONGODB_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log('connected to MongoDB')
@@ -70,14 +70,14 @@ const resolvers = {
       }
       return returnedBooks
     },
-    allAuthors: () => Author.find({})
+    allAuthors: () => Author.find({}),
   },
   Author: {
     bookCount: async (root) => {
       const books = await Book.find({})
       const author = await Author.findOne({ name: root.name })
       return books.filter((book) => book.author.toString() === author.id).length
-    }
+    },
   },
   Mutation: {
     addBook: async (root, args) => {
@@ -92,27 +92,26 @@ const resolvers = {
         return book
       } catch (error) {
         throw new UserInputError(error.message, {
-          invalidArgs: args
+          invalidArgs: args,
         })
       }
     },
-    editAuthor: (root, args) => {
-      const author = authors.find((author) => author.name === args.name)
-      if (!author) {
-        return null
-      }
-      const updatedAuthor = { ...author, born: args.setBornTo }
-      authors = authors.map((author) =>
-        author.name === args.name ? updatedAuthor : author
+    editAuthor: async (root, args) => {
+      const updatedAuthor = await Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        {
+          new: true,
+        }
       )
       return updatedAuthor
-    }
-  }
+    },
+  },
 }
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
 })
 
 server.listen().then(({ url }) => {
