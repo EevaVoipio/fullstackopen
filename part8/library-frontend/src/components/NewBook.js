@@ -25,6 +25,7 @@ const NewBook = (props) => {
     try {
       await createBook({ variables: { title, author, year, genres } })
     } catch (error) {
+      console.log(error)
       setErrorMessage(error.message)
       setTimeout(() => {
         setErrorMessage(null)

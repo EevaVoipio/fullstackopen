@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
 
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
+import Notification from './Notification'
 
 const Authors = (props) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
   const result = useQuery(ALL_AUTHORS)
+  const [errorMessage, setErrorMessage] = useState(null)
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   })
@@ -14,7 +16,14 @@ const Authors = (props) => {
   const submit = async (event) => {
     event.preventDefault()
     const year = Number(born)
-    updateAuthor({ variables: { name, year } })
+    try {
+      await updateAuthor({ variables: { name, year } })
+    } catch (error) {
+      setErrorMessage(error.message)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
     setName('')
     setBorn('')
   }
@@ -71,6 +80,7 @@ const Authors = (props) => {
         </div>
         <button type='submit'>update author</button>
       </form>
+      <Notification message={errorMessage} type={'error'} />
     </div>
   )
 }
