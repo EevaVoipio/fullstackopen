@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-  useMutation,
-  useApolloClient,
-  useQuery,
-  useLazyQuery,
-} from '@apollo/client'
+import { useMutation, useApolloClient, useLazyQuery } from '@apollo/client'
 
 import Authors from './components/Authors'
 import Books from './components/Books'
@@ -22,8 +17,9 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
   const [loginUser] = useMutation(LOGIN)
-  const userData = useQuery(GET_USER)
-  const userGenre = userData?.me?.favoriteGenre
+  const [getUserData, userData] = useLazyQuery(GET_USER)
+  //const userGenre = userData?.me?.favoriteGenre
+  const [userGenre, setUserGenre] = useState(null)
   const client = useApolloClient()
 
   useEffect(() => {
@@ -33,7 +29,14 @@ const App = () => {
     }
   }, [])
 
+  useEffect(() => {
+    if (userData?.data?.me) {
+      setUserGenre(userData.data.me.favoriteGenre)
+    }
+  }, [userData])
+
   const handleRecommendation = () => {
+    getUserData()
     setPage('recommended')
   }
 
