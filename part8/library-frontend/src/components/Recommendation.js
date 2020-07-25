@@ -1,25 +1,17 @@
 import React from 'react'
-import { useQuery } from '@apollo/client'
-
-import { ALL_BOOKS_FOR_GENRE } from '../queries'
 
 const Recommendation = (props) => {
   const genre = props.genre
-
-  const bookResult = useQuery(ALL_BOOKS_FOR_GENRE, {
-    skip: !genre,
-    variables: { genre: genre ? genre : '' },
-  })
 
   if (!props.show) {
     return null
   }
 
-  if (!bookResult.data) {
+  if (!props.bookResult.data) {
     return <div>loading...</div>
   }
 
-  const books = bookResult.data.allBooks
+  const books = props.bookResult.data.allBooks
 
   return (
     <div>

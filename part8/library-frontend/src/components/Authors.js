@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 
 import { ALL_AUTHORS, UPDATE_AUTHOR } from '../queries'
 import Notification from './Notification'
@@ -7,7 +7,6 @@ import Notification from './Notification'
 const Authors = (props) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
-  const result = useQuery(ALL_AUTHORS)
   const [errorMessage, setErrorMessage] = useState(null)
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
@@ -32,12 +31,6 @@ const Authors = (props) => {
     return null
   }
 
-  if (result.loading) {
-    return <div>loading...</div>
-  }
-
-  const authors = result.data.allAuthors
-
   return (
     <div>
       <h2>authors</h2>
@@ -48,7 +41,7 @@ const Authors = (props) => {
             <th>born</th>
             <th>books</th>
           </tr>
-          {authors.map((a) => (
+          {props.authors.map((a) => (
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>
@@ -63,7 +56,7 @@ const Authors = (props) => {
           name
           <select value={name} onChange={({ target }) => setName(target.value)}>
             <option key='Select author'>Select author</option>
-            {authors.map((a) => (
+            {props.authors.map((a) => (
               <option key={a.name} value={a.name}>
                 {a.name}
               </option>
