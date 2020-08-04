@@ -1,4 +1,4 @@
-const calculateBmi = (height: number, weight: number): string => {
+const calculateBmi = (height: number, weight: number) => {
     const bmi = weight / ((height / 100) * (height / 100));
     let message = '';
     if (bmi < 18.5) {
@@ -10,7 +10,22 @@ const calculateBmi = (height: number, weight: number): string => {
     } else {
         message = 'Obese (unhealthy weight)';
     }
-    return message;
+    console.log(message)
 }
 
-console.log(calculateBmi(180, 74));
+try {
+    if (process.argv.length < 4) throw new Error('Not enough arguments');
+    if (process.argv.length > 4) throw new Error('Too many arguments');
+    if (!isNaN(Number(process.argv[2])) && !isNaN(Number(process.argv[3]))) {
+        const height = Number(process.argv[2]);
+        const weight = Number(process.argv[3]);
+        calculateBmi(height, weight);
+    } else {
+        throw new Error('Provided values were not numbers!');
+    }
+} catch (e) {
+    console.log('Error, something bad happened, message: ', e.message);
+}
+
+
+
