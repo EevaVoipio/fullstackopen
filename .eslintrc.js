@@ -5,11 +5,11 @@ module.exports = {
     es6: true,
     node: true,
     es2020: true,
-    jest: true
+    jest: true,
   },
   extends: 'eslint:recommended',
   parserOptions: {
-    ecmaVersion: 11
+    ecmaVersion: 11,
   },
   rules: {
     indent: ['error', 2],
@@ -20,6 +20,6 @@ module.exports = {
     'no-trailing-spaces': 'error',
     'object-curly-spacing': ['error', 'always'],
     'arrow-spacing': ['error', { before: true, after: true }],
-    'no-console': 0
-  }
+    'no-console': 0,
+  },
 }

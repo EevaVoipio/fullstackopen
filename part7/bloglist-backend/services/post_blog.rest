@@ -1,12 +1,13 @@
-POST http://localhost:3001/api/blogs/5f14a55105dddd9e743657c9/comments
+POST http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667/entries
 Content-Type: application/json
 
 
 {
-  "likes": 0,
-  "title": "Test blog 3679",
-  "author": "Newson Lawson",
-  "url": "newson.ca",
-  "user": "5f02d4f182b5aa4b1d949174",
-  "comments": ["Nice blog", "Nice blog"]
+  "type":"Hospital",
+  "date": "2020-01-01",
+  "specialist":"House",
+  "diagnosisCodes":["S62.5"],
+  "description":"Healing time appr. 2 weeks.",
+  "discharge":{"date":"2020-01-16","criteria":"Thumb healed."}
 }
+
