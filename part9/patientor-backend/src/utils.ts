@@ -81,6 +81,23 @@ const toNewEntry = (object: {
         },
       };
     case 'OccupationalHealthcare':
+      if (object.sickLeave?.startDate && object.sickLeave.endDate) {
+        return  {
+          id: uuidv4(),
+          type: parseType(object.type),
+          description: parseString(object.description),
+          date: parseDate(object.date),
+          specialist: parseString(object.specialist),
+          diagnosisCodes: object.diagnosisCodes?.map((diagnosis) =>
+            parseString(diagnosis)
+          ),
+          employerName: parseString(object.employerName),
+          sickLeave: {
+            startDate: parseDate(object.sickLeave?.startDate),
+            endDate: parseDate(object.sickLeave?.endDate),
+          },
+      }
+    }
       return {
         id: uuidv4(),
         type: parseType(object.type),
@@ -91,10 +108,6 @@ const toNewEntry = (object: {
           parseString(diagnosis)
         ),
         employerName: parseString(object.employerName),
-        sickLeave: {
-          startDate: parseDate(object.sickLeave?.startDate),
-          endDate: parseDate(object.sickLeave?.endDate),
-        },
       };
     default:
       throw Error('Invalid type!');
